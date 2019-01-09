@@ -1,0 +1,20 @@
+<html>
+  <body>
+    <% if issues.any? %>
+      <p>
+      Issues with no response yet:
+      </p>
+
+      <ul>
+        <% issues.each do |issue| %>
+          <li>
+            <a href="<%= issue.link %>"><%= issue.pretty %></a>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <h3>No issues waiting for a response!</h3>
+      <h2>Have a nice day!</h2>
+    <% end %>
+  </body>
+</html>

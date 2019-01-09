@@ -1,0 +1,10 @@
+<% if issues.any? %>
+Issues with no response yet:
+
+<% issues.each do |issue| %>
+* <%= issue.pretty %>
+  <%= issue.link %>
+<% end %>
+<% else %>
+  Have a nice day!
+<% end %>
