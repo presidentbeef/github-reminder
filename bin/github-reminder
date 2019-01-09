@@ -1,43 +1,11 @@
 #!/usr/bin/env ruby
-require_relative '../lib/issues'
+require_relative '../lib/config'
+require_relative '../lib/reminder'
 
-user, repo, token = ARGV
+default_config_path = File.join(__dir__, "..", "github_reminder.json")
 
-unless token then
-  hub_config = File.expand_path "~/.config/hub"
+config = GitHubReminder::Config.from_file default_config_path
 
-  if File.file? hub_config then
-    require "yaml"
-    config = YAML.load File.read hub_config
-    token  = config.dig("github.com", 0, "oauth_token")
-  end
-end
+reminder = GitHubReminder::Reminder.new config
 
-abort "Usage: github-reminder [user] [repo] [token]" unless user && repo && token
-
-issues = Issues.new(user, repo, token)
-
-puts
-
-iss = issues.issues_with_no_response
-
-if iss.any?
-  puts "Issues with no response yet:"
-  puts
-  iss.each do |i|
-    puts "\t#{i.pretty}"
-    puts "\t\t#{i.link}"
-    puts
-  end
-end
-
-prs = issues.prs_with_no_response
-
-if prs.any?
-  puts "Pull requests with no response yet:"
-  prs.each do |i|
-    puts "\t#{i.pretty}"
-    puts "\t\t#{i.link}"
-    puts
-  end
-end
+reminder.remind_all_issues
