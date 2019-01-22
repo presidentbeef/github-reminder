@@ -1,11 +1,4 @@
 #!/usr/bin/env ruby
-require_relative '../lib/config'
-require_relative '../lib/reminder'
+require_relative '../lib/commandline'
 
-default_config_path = File.join(__dir__, "..", "github_reminder.json")
-
-config = GitHubReminder::Config.from_file default_config_path
-
-reminder = GitHubReminder::Reminder.new config
-
-reminder.remind_all_issues
+GitHubReminder::CommandLine.run

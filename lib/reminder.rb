@@ -9,18 +9,56 @@ module GitHubReminder
 
     def initialize config
       @config = config
+      @issue_cache = {}
     end
 
-    def remind_all_issues
-      config[:repos].each do |repo|
-        remind_issues repo[:owner], repo[:name]
+    def each_issue_with_no_response
+      get_all_issues.each do |owner, projects|
+        projects.each do |project, issues|
+          yield owner, project, issues.issues_with_no_response
+        end
       end
     end
 
-    def remind_issues owner, project 
-      issues = get_issues owner, project
+    def get_all_issues
+      return @issue_cache unless @issue_cache.empty?
 
-      send_issues issues.issues_with_no_response, project
+      config[:repos].each do |repo|
+        issues = get_issues repo[:owner], repo[:name]
+
+        @issue_cache[repo[:owner]] ||= {}
+        @issue_cache[repo[:owner]][repo[:name]] = issues
+      end
+
+      @issue_cache
+    end
+
+    def remind_all_issues
+      each_issue_with_no_response do |owner, project, issues|
+        remind_issues project, issues
+      end
+    end
+
+    def display_all_issues
+      output = []
+
+      each_issue_with_no_response do |owner, project, issues|
+        output << display_issues(owner, project, issues)
+      end
+
+      output
+    end
+
+    def display_issues owner, project, issues
+      <<~OUTPUT
+      #{format_subject(issues, project)}
+
+      #{format_message(issues, plain_template)}
+      OUTPUT
+    end
+
+    def remind_issues project, issues
+      send_issues issues, project
     end
 
     def get_issues owner, project
@@ -29,17 +67,21 @@ module GitHubReminder
     end
 
     def send_issues issues, project 
-      subject = if issues.any?
-                  "#{issues.length} issues for #{project} awaiting response"
-                else
-                  "Your GitHub queue for #{project} is empty"
-                end
+      subject = format_subject(issues, project)
 
       plain_email = format_message(issues, plain_template)
       html_email = format_message(issues, html_template)
 
       m = GitHubReminder::Mail.new(**config[:mail][:server])
       m.send_message config[:mail][:sender_address], config[:mail][:receiver_address], subject, plain_email, html_email
+    end
+
+    def format_subject issues, project
+      if issues.any?
+        "#{issues.length} issues for #{project} awaiting response"
+      else
+        "Your GitHub queue for #{project} is empty"
+      end
     end
 
     def format_message issues, template 
