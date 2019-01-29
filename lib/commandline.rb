@@ -7,8 +7,6 @@ module GitHubReminder
       def run options: nil, config: nil 
         options ||= default_options.merge(parse_options)
 
-        p options
-
         early_exit_options options
 
         config ||= read_config(options[:config_file])
