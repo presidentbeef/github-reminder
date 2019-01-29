@@ -1,0 +1,9 @@
+---
+name: github-reminder
+runtime: ruby:2.5.3
+test_command: rspec
+abort_build_when_tests_fail: true
+abort_deploy_when_tests_fail: true
+schedule:
+  reminder:
+    when: every 1 hour

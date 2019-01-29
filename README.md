@@ -120,6 +120,46 @@ The user name or organization for the repo. E.g., the `presidentbeef` in `presid
 
 The name of the GitHub repository. E.g., the `github-reminder` in `presidentbeef/github-reminder`.
 
+## Use with FaaStRuby
+
+[FaaStRuby](https://faastruby.io/) can be used to run GitHub Reminder in the cloud.
+
+Clone this repo:
+
+    git clone https://github.com/presidentbeef/github-reminder.git
+
+Generate a configuration file:
+
+    ./bin/github-reminder --generate-config --config-file ../github-reminder.json
+
+(Note: You do *not* want the configuration file with your passwords in the github-reminder directory.)
+
+Edit `../github-reminder.json` as described above.
+
+Install FaaStRuby:
+
+    gem install faastruby
+
+Create a workspace:
+
+    faastruby create-workspace YOUR_WORKSPACE_NAME --email YOUR_EMAIL
+
+Edit `faastruby.yml` to adjust name of the job and frequency, if desired.
+
+Deploy:
+
+    faastruby deploy-to YOUR_WORKSPACE_NAME
+
+Update the configuration:
+
+    cat ../github_reminder.json | base64 -w0 | faastruby update-context YOUR_WORKSPACE_NAME --stdin
+
+This way the configuration [is encrypted](https://faastruby.io/getting-started/#execution-context) on the server.
+
+You can use curl to test the setup by hitting the endpoint displayed after deploying.
+
+Otherwise, it should run on the schedule you have set.
+
 ## License
 
 MIT
