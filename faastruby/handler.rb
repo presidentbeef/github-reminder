@@ -3,7 +3,6 @@ require_relative 'lib/config'
 require_relative 'lib/reminder'
 
 def handler event
-
   if not event.context.is_a? String
     render(text: "No configuration information")
   else

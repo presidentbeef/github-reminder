@@ -6,4 +6,4 @@ abort_build_when_tests_fail: true
 abort_deploy_when_tests_fail: true
 schedule:
   reminder:
-    when: every Monday at 09:00
+    when: "every Monday at 17:00"
