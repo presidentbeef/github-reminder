@@ -130,11 +130,15 @@ Clone this repo:
 
 Generate a configuration file:
 
-    ./bin/github-reminder --generate-config --config-file ../github-reminder.json
+    ./bin/github-reminder --generate-config --config-file github-reminder.json
 
-(Note: You do *not* want the configuration file with your passwords in the github-reminder directory.)
+(Note: You do *not* want the configuration file with your passwords in the faastruby directory.)
 
-Edit `../github-reminder.json` as described above.
+Edit `github-reminder.json` as described above.
+
+Switch to the faastruby directory:
+
+    cd faastruby/
 
 Install FaaStRuby:
 
