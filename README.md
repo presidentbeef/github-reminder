@@ -152,7 +152,7 @@ Deploy:
 
 Update the configuration:
 
-    cat ../github_reminder.json | base64 -w0 | faastruby update-context YOUR_WORKSPACE_NAME --stdin
+    cat ../github_reminder.json | faastruby update-context YOUR_WORKSPACE_NAME --stdin
 
 This way the configuration [is encrypted](https://faastruby.io/getting-started/#execution-context) on the server.
 

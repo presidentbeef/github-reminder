@@ -1,5 +1,4 @@
 require 'json'
-require 'base64'
 require_relative 'lib/config'
 require_relative 'lib/reminder'
 
@@ -8,7 +7,7 @@ def handler event
   if not event.context.is_a? String
     render(text: "No configuration information")
   else
-    setup = JSON.parse(Base64.decode64(event.context), symbolize_names: true)
+    setup = JSON.parse(event.context, symbolize_names: true)
 
     GitHubReminder::Config.validate setup
     config = GitHubReminder::Config.new(setup)
